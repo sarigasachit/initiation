@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -209,12 +210,47 @@
             display: inline-block;
         }
 
+        /* Jigsaw puzzle styles */
+        .jigsaw-container {
+            max-width: 450px;
+            margin: 30px auto;
+        }
+
+        .jigsaw-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+            margin: 20px 0;
+            background: rgba(201, 169, 97, 0.1);
+            padding: 4px;
+            border: 2px solid rgba(201, 169, 97, 0.3);
+        }
+
+        .jigsaw-piece {
+            aspect-ratio: 1;
+            cursor: move;
+            border: 2px solid rgba(201, 169, 97, 0.4);
+            background-size: 300% 300%;
+            transition: transform 0.2s, box-shadow 0.2s;
+            touch-action: none;
+        }
+
+        .jigsaw-piece:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(201, 169, 97, 0.5);
+        }
+
+        .jigsaw-piece.dragging {
+            opacity: 0.5;
+        }
+
         .final-reveal {
             text-align: center;
             padding: 100px 20px;
             animation: fadeIn 4s ease-in;
             min-height: 80vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
         }
@@ -229,6 +265,22 @@
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .title {
+                font-size: 1.8rem;
+                letter-spacing: 5px;
+            }
+
+            .jigsaw-container {
+                max-width: 100%;
+            }
+
+            .jigsaw-piece {
+                min-height: 100px;
+            }
         }
     </style>
 </head>
@@ -249,14 +301,14 @@
             2: { title: 'GATE II', answer: 'US' },
             3: { title: 'GATE III', answer: 'JUDGE' },
             4: { title: 'GATE IV', answer: 'KEBAB' },
-            5: { title: 'GATE V', answer: 'FLAME' },
+            5: { title: 'GATE V', answer: 'SLOW FIRE MAKES MEAT TENDER' },
             6: { title: 'GATE VI', answer: 'WHERE' },
             7: { title: 'GATE VII', answer: 'FIRE' },
             8: { title: 'GATE VIII', answer: 'LEARNED' },
             9: { title: 'GATE IX', answer: 'PATIENCE' }
         };
 
-        // Rich SVG images
+        // Rich SVG images (keeping existing ones)
         const IMAGES = {
             gate1: `<svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
                 <rect width="400" height="300" fill="#1a1a1a"/>
@@ -371,8 +423,6 @@
             const [answer, setAnswer] = useState('');
             const [jigsawGrid, setJigsawGrid] = useState(Array(9).fill(''));
 
-            // No localStorage - fresh start every time!
-
             const logAttempt = (gate, attempt, correct) => {
                 const key = `gate_${gate}`;
                 setProgress(prev => ({
@@ -413,13 +463,11 @@
             };
 
             const handleJigsawSubmit = () => {
-                const correctPhrase = ['SLO', 'W FI', 'RE M', 'AKES', ' TEN', 'DER', ' MEA', 'T', ''];
-                const allCorrect = correctPhrase.every((piece, index) => {
-                    if (piece === '') return !jigsawGrid[index] || jigsawGrid[index] === '';
-                    return jigsawGrid[index] === piece;
-                });
+                const correctPhrase = ['SLO', 'W FI', 'RE M', 'AKES', ' MEA', 'T TE', 'NDER'];
+                const userPhrase = jigsawGrid.filter(p => p).join('');
+                const correctFull = correctPhrase.join('');
                 
-                if (allCorrect) {
+                if (userPhrase === correctFull || userPhrase.replace(/\s/g, '') === 'SLOWFIREMAKESTENDER' || userPhrase.replace(/\s/g, '') === 'SLOWFIREMAKESMEATTENDER') {
                     setFeedback({ type: 'success', message: 'Ancient wisdom revealed.' });
                     logAttempt(5, jigsawGrid.join(''), true);
                     setTimeout(() => {
@@ -640,34 +688,174 @@
             );
         }
 
+        // INTERACTIVE JIGSAW PUZZLE COMPONENT
+        function JigsawPuzzle({ onComplete }) {
+            const [pieces, setPieces] = useState(() => {
+                // Start with shuffled positions
+                const positions = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+                for (let i = positions.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [positions[i], positions[j]] = [positions[j], positions[i]];
+                }
+                return positions.map((pos, index) => ({
+                    id: index,
+                    currentPos: pos
+                }));
+            });
+
+            const [draggedPiece, setDraggedPiece] = useState(null);
+
+            const handleDragStart = (e, pieceId) => {
+                setDraggedPiece(pieceId);
+                e.dataTransfer.effectAllowed = 'move';
+            };
+
+            const handleDragOver = (e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+            };
+
+            const handleDrop = (e, targetPos) => {
+                e.preventDefault();
+                if (draggedPiece === null) return;
+
+                setPieces(prevPieces => {
+                    const newPieces = [...prevPieces];
+                    const draggedIndex = newPieces.findIndex(p => p.id === draggedPiece);
+                    const targetIndex = newPieces.findIndex(p => p.currentPos === targetPos);
+
+                    // Swap positions
+                    [newPieces[draggedIndex].currentPos, newPieces[targetIndex].currentPos] = 
+                    [newPieces[targetIndex].currentPos, newPieces[draggedIndex].currentPos];
+
+                    // Check if solved
+                    const solved = newPieces.every(p => p.id === p.currentPos);
+                    if (solved) {
+                        setTimeout(() => onComplete(), 1000);
+                    }
+
+                    return newPieces;
+                });
+
+                setDraggedPiece(null);
+            };
+
+            const getPieceStyle = (pieceId) => {
+                const row = Math.floor(pieceId / 3);
+                const col = pieceId % 3;
+                
+                return {
+                    backgroundImage: 'linear-gradient(135deg, #E30A17 0%, #E30A17 100%)',
+                    backgroundSize: '300% 300%',
+                    backgroundPosition: `${-col * 100}% ${-row * 100}%`,
+                    position: 'relative',
+                    overflow: 'hidden'
+                };
+            };
+
+            const renderPieceContent = (pieceId) => {
+                // Turkish flag split into 9 pieces
+                const row = Math.floor(pieceId / 3);
+                const col = pieceId % 3;
+                
+                // Create SVG elements based on piece position
+                if (pieceId === 4) { // Center piece - has crescent and star
+                    return (
+                        <svg width="100%" height="100%" viewBox="0 0 200 200" preserveAspectRatio="none" style={{position: 'absolute', top: 0, left: 0}}>
+                            <rect width="200" height="200" fill="#E30A17"/>
+                            <circle cx="80" cy="100" r="50" fill="#FFFFFF"/>
+                            <circle cx="95" cy="100" r="40" fill="#E30A17"/>
+                            <path d="M 130 100 L 145 130 L 115 108 L 130 108 L 100 130 Z" fill="#FFFFFF"/>
+                        </svg>
+                    );
+                } else if (pieceId === 1 || pieceId === 7) { // Pieces with parts of crescent/star
+                    return (
+                        <svg width="100%" height="100%" viewBox={`${col * 200} ${row * 200} 200 200`} preserveAspectRatio="none" style={{position: 'absolute', top: 0, left: 0}}>
+                            <rect width="600" height="600" fill="#E30A17"/>
+                            <circle cx="240" cy="300" r="150" fill="#FFFFFF"/>
+                            <circle cx="285" cy="300" r="120" fill="#E30A17"/>
+                            <path d="M 390 300 L 435 390 L 345 324 L 390 324 L 300 390 Z" fill="#FFFFFF"/>
+                        </svg>
+                    );
+                } else {
+                    return (
+                        <svg width="100%" height="100%" viewBox={`${col * 200} ${row * 200} 200 200`} preserveAspectRatio="none" style={{position: 'absolute', top: 0, left: 0}}>
+                            <rect width="600" height="600" fill="#E30A17"/>
+                            <circle cx="240" cy="300" r="150" fill="#FFFFFF"/>
+                            <circle cx="285" cy="300" r="120" fill="#E30A17"/>
+                            <path d="M 390 300 L 435 390 L 345 324 L 390 324 L 300 390 Z" fill="#FFFFFF"/>
+                        </svg>
+                    );
+                }
+            };
+
+            const sortedPieces = [...pieces].sort((a, b) => a.currentPos - b.currentPos);
+
+            return (
+                <div className="jigsaw-container">
+                    <div style={{
+                        fontSize: 'clamp(1rem, 4vw, 1.3rem)',
+                        color: '#c9a961',
+                        textAlign: 'center',
+                        marginBottom: '20px',
+                        fontStyle: 'italic'
+                    }}>
+                        Drag the pieces.<br/>
+                        Form the symbol.
+                    </div>
+
+                    <div className="jigsaw-grid">
+                        {sortedPieces.map((piece) => (
+                            <div
+                                key={piece.id}
+                                className="jigsaw-piece"
+                                draggable
+                                onDragStart={(e) => handleDragStart(e, piece.id)}
+                                onDragOver={handleDragOver}
+                                onDrop={(e) => handleDrop(e, piece.currentPos)}
+                                style={getPieceStyle(piece.id)}
+                            >
+                                {renderPieceContent(piece.id)}
+                            </div>
+                        ))}
+                    </div>
+
+                    <div style={{
+                        textAlign: 'center',
+                        marginTop: '20px',
+                        color: '#888',
+                        fontSize: '0.85rem',
+                        fontStyle: 'italic'
+                    }}>
+                        Arrange to reveal the place.
+                    </div>
+                </div>
+            );
+        }
+
         function FinalRevealSequence() {
-            const [stage, setStage] = useState('sentence'); // sentence -> puzzle -> reveal
-            const [answer, setAnswer] = useState('');
-            const [feedback, setFeedback] = useState('');
+            const [stage, setStage] = useState('sentence');
+            const [jigsawComplete, setJigsawComplete] = useState(false);
 
             useEffect(() => {
                 if (stage === 'sentence') {
-                    const timer = setTimeout(() => setStage('puzzle'), 5000);
+                    const timer = setTimeout(() => setStage('jigsaw'), 5000);
                     return () => clearTimeout(timer);
                 }
             }, [stage]);
 
-            const checkFinalAnswer = () => {
-                const normalized = answer.trim().toUpperCase();
-                if (normalized === 'TURKEY' || normalized === 'TÜRKIYE') {
-                    setStage('reveal');
-                } else {
-                    setFeedback('Look closer at the symbols...');
-                    setTimeout(() => setFeedback(''), 2000);
+            useEffect(() => {
+                if (jigsawComplete) {
+                    setTimeout(() => setStage('reveal'), 1500);
                 }
-            };
+            }, [jigsawComplete]);
 
             if (stage === 'reveal') {
                 return (
                     <div className="final-reveal">
                         <div style={{
-                            fontSize: '5rem',
-                            letterSpacing: '15px',
+                            fontSize: 'clamp(2rem, 12vw, 5rem)',
+                            letterSpacing: 'clamp(5px, 3vw, 15px)',
                             color: '#c9a961',
                             marginBottom: '40px',
                             animation: 'finalPulse 2s ease-in-out',
@@ -675,12 +863,12 @@
                         }}>
                             TURKEY
                         </div>
-                        <div style={{fontSize: '4rem', margin: '30px 0'}}>🇹🇷</div>
+                        <div style={{fontSize: 'clamp(2rem, 10vw, 4rem)', margin: '30px 0'}}>🇹🇷</div>
                         <div style={{
-                            fontSize: '1.4rem',
+                            fontSize: 'clamp(1rem, 4vw, 1.4rem)',
                             color: '#d0d0d0',
                             fontStyle: 'italic',
-                            maxWidth: '500px',
+                            maxWidth: '90%',
                             margin: '40px auto',
                             lineHeight: 2
                         }}>
@@ -699,22 +887,21 @@
                 );
             }
 
-            if (stage === 'puzzle') {
+            if (stage === 'jigsaw') {
                 return (
                     <div className="container" style={{paddingTop: '40px'}}>
                         <div style={{
-                            fontSize: '1.8rem',
+                            fontSize: 'clamp(1.2rem, 5vw, 1.8rem)',
                             color: '#c9a961',
                             textAlign: 'center',
                             margin: '30px 0',
-                            letterSpacing: '4px',
                             fontStyle: 'italic'
                         }}>
                             The words you gathered speak:
                         </div>
 
                         <div style={{
-                            fontSize: '1.5rem',
+                            fontSize: 'clamp(1rem, 4.5vw, 1.5rem)',
                             textAlign: 'center',
                             color: '#d0d0d0',
                             fontStyle: 'italic',
@@ -726,85 +913,28 @@
                         </div>
 
                         <div style={{
-                            fontSize: '2rem',
+                            fontSize: 'clamp(1.5rem, 6vw, 2rem)',
                             color: '#c9a961',
                             textAlign: 'center',
                             margin: '50px 0 30px',
-                            letterSpacing: '6px'
+                            letterSpacing: 'clamp(3px, 2vw, 6px)'
                         }}>
                             WHERE?
                         </div>
 
-                        <div className="gate-content">
-                            <div className="image-container">
-                                <svg width="400" height="400" xmlns="http://www.w3.org/2000/svg" style={{maxWidth: '100%', height: 'auto', display: 'block', margin: '0 auto'}}>
-                                    <rect width="400" height="400" fill="#1a1a1a"/>
-                                    
-                                    <rect x="50" y="50" width="300" height="200" fill="#E30A17" opacity="0.2"/>
-                                    
-                                    <circle cx="160" cy="150" r="65" fill="none" stroke="#c9a961" strokeWidth="5"/>
-                                    <circle cx="177" cy="150" r="53" fill="#1a1a1a"/>
-                                    
-                                    <path d="M 260 150 L 277 185 L 250 162 L 270 162 L 243 185 Z" 
-                                          fill="none" stroke="#c9a961" strokeWidth="4"/>
-                                    
-                                    <line x1="100" y1="280" x2="100" y2="360" stroke="#c9a961" strokeWidth="5"/>
-                                    <ellipse cx="100" cy="290" rx="35" ry="18" fill="none" stroke="#c9a961" strokeWidth="3"/>
-                                    <ellipse cx="100" cy="310" rx="35" ry="18" fill="none" stroke="#c9a961" strokeWidth="3"/>
-                                    <ellipse cx="100" cy="330" rx="35" ry="18" fill="none" stroke="#c9a961" strokeWidth="3"/>
-                                    <ellipse cx="100" cy="350" rx="35" ry="18" fill="none" stroke="#c9a961" strokeWidth="3"/>
-                                    
-                                    <line x1="220" y1="310" x2="350" y2="310" stroke="#c9a961" strokeWidth="4"/>
-                                    <line x1="235" y1="270" x2="235" y2="310" stroke="#c9a961" strokeWidth="3"/>
-                                    <line x1="335" y1="270" x2="335" y2="310" stroke="#c9a961" strokeWidth="3"/>
-                                    <path d="M 220 310 Q 220 330 235 340" stroke="#c9a961" strokeWidth="2" fill="none"/>
-                                    <path d="M 350 310 Q 350 330 335 340" stroke="#c9a961" strokeWidth="2" fill="none"/>
-                                </svg>
-                                <div className="image-caption" style={{fontSize: '1rem', lineHeight: 1.8, marginTop: '20px'}}>
-                                    Without them, no Germany.<br/>
-                                    A bridge spanning two continents.<br/>
-                                    <br/>
-                                    <strong>Guess the place?</strong>
-                                </div>
-                            </div>
-
-                            {feedback && (
-                                <div style={{
-                                    textAlign: 'center',
-                                    color: '#e57373',
-                                    fontStyle: 'italic',
-                                    margin: '20px 0'
-                                }}>
-                                    {feedback}
-                                </div>
-                            )}
-
-                            <input
-                                type="text"
-                                placeholder="Name the place"
-                                value={answer}
-                                onChange={(e) => setAnswer(e.target.value)}
-                                onKeyPress={(e) => e.key === 'Enter' && checkFinalAnswer()}
-                                style={{
-                                    fontSize: '1.3rem',
-                                    textAlign: 'center',
-                                    textTransform: 'uppercase',
-                                    letterSpacing: '3px',
-                                    marginTop: '20px'
-                                }}
-                            />
-                            <button onClick={checkFinalAnswer} style={{marginTop: '15px'}}>
-                                Submit Final Answer
-                            </button>
-                        </div>
+                        <JigsawPuzzle onComplete={() => setJigsawComplete(true)} />
                     </div>
                 );
             }
 
-            // Stage: sentence
             return (
                 <div className="final-reveal">
-                    <div className="final-sentence" style={{fontSize: '2rem'}}>
+                    <div style={{
+                        fontSize: 'clamp(1.2rem, 5vw, 2rem)',
+                        lineHeight: 2,
+                        color: '#c9a961',
+                        fontStyle: 'italic'
+                    }}>
                         Let us judge kebab<br/>
                         where fire learned patience.
                     </div>
@@ -860,8 +990,7 @@
                             <SVGImage data={IMAGES.gate2} caption="Two circles merge into one" />
                             <div className="verse">
                                 Two rivers meet without speaking.<br/>
-                                Two flames merge without negotiation.<br/>
-                                
+                                Two flames merge without negotiation.
                             </div>
                             <p style={{textAlign: 'center', color: '#d0d0d0', fontStyle: 'italic'}}>
                                 Not I. Not you. What remains?
@@ -883,15 +1012,13 @@
                         <div className="gate-content">
                             <SVGImage data={IMAGES.gate3} caption="The scales of sovereignty" />
                             <div className="verse">
-                               Like the storm, it  arrives.<br/>
-                                And stays like the cloud above your head<br/>
+                                Like the storm, it arrives.<br/>
+                                And stays like the cloud above your head.<br/>
                                 You cannot stop it.<br/>
-                                Nor can't escape it.<br/>
-                                <br/>
-                                
+                                Nor can you escape it.
                             </div>
                             <p style={{textAlign: 'center', color: '#d0d0d0', fontStyle: 'italic'}}>
-                               You fear this qualia of Pappa and Mamma all the time
+                                You fear this quality of Pappa and Mamma all the time.
                             </p>
                         </div>
                         <input
@@ -910,15 +1037,14 @@
                         <div className="gate-content">
                             <SVGImage data={IMAGES.gate4} caption="One word, many languages" />
                             <div className="verse">
-                               Watching through our Window.<br/>
-                               Across Bodestrasse 8.<br/>
-                               Forges spanning the rails.
-                               Aroma persuades your dream
-                               Relishing with a Pessoa on the hand,
-                               and me beside you watching the lane.
+                                Watching through our window.<br/>
+                                Across Bodestrasse 8.<br/>
+                                Forges spanning the rails.<br/>
+                                Aroma persuades your dream.<br/>
+                                Relishing with a Pessoa on hand,<br/>
+                                and me beside you watching the lane.
                             </div>
                             <p style={{textAlign: 'center', color: '#d0d0d0', fontStyle: 'italic'}}>
-                              
                                 What dream needs no waiting, though I despise?
                             </p>
                         </div>
@@ -939,7 +1065,7 @@
                             <SVGImage data={IMAGES.gate5} caption="Fire descends to the hearth" />
                             <div className="verse">
                                 The ancients knew what haste forgets.<br/>
-                                Time is the ingredient of  the taste.
+                                Time is the ingredient of the taste.
                             </div>
                             <div className="grid-container">
                                 {jigsawGrid.map((cell, i) => (
@@ -947,7 +1073,7 @@
                                 ))}
                             </div>
                             <div style={{textAlign: 'center', marginTop: '20px'}}>
-                                {['SL',' ME', 'KES', 'FI', 'AT','DER', 'MA', 'OW', ' TEN', 'RE' ].map((tile, i) => (
+                                {['SLO', 'W FI', 'RE M', 'AKES', ' MEA', 'T TE', 'NDER'].map((tile, i) => (
                                     <div 
                                         key={i} 
                                         className="tile-option"
@@ -1022,13 +1148,11 @@
                             <SVGImage data={IMAGES.gate8} caption="Two forms of knowledge" />
                             <div className="verse">
                                 That which arrives with birth—<br/>
-                                Possessed without but  drives to know.<br/>
-                                 Brhaman does this to be.<br/>
-                                <br/>
-                               
+                                Possessed without study, but drives us to know.<br/>
+                                Brahman does this to be.
                             </div>
                             <p style={{textAlign: 'center', color: '#d0d0d0', fontStyle: 'italic'}}>
-                                
+                                What word describes knowledge earned through time?
                             </p>
                         </div>
                         <input
@@ -1047,12 +1171,15 @@
                         <div className="gate-content">
                             <SVGImage data={IMAGES.gate9} caption="The hourglass of virtue" />
                             <div className="verse">
-                               
                                 Practice cultivates it.<br/>
                                 <br/>
                                 Fire teaches it to meat.<br/>
                                 Time teaches it to humans.
                             </div>
+                            <p style={{textAlign: 'center', color: '#d0d0d0', fontStyle: 'italic'}}>
+                                Eight letters. P begins. E ends.<br/>
+                                What virtue transforms both meat and souls?
+                            </p>
                         </div>
                         <input
                             type="text"
