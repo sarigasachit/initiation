@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,12 +14,20 @@
             -webkit-tap-highlight-color: transparent;
         }
 
+        html {
+            width: 100%;
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
+
         body {
             font-family: 'Crimson Text', Georgia, serif;
             background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
             color: #e0e0e0;
             overflow-x: hidden;
             min-height: 100vh;
+            width: 100%;
+            max-width: 100vw;
         }
 
         .container {
@@ -28,26 +35,27 @@
             max-width: 600px;
             margin: 0 auto;
             min-height: 100vh;
+            width: 100%;
         }
 
         .title {
-            font-size: 2.5rem;
+            font-size: clamp(1.3rem, 5vw, 2.5rem);
             text-align: center;
             margin: 30px 0 50px;
             font-weight: 300;
-            letter-spacing: 8px;
+            letter-spacing: clamp(3px, 2vw, 8px);
             text-transform: uppercase;
             color: #f5f5f5;
             text-shadow: 0 0 20px rgba(255,255,255,0.1);
         }
 
         .gate-title {
-            font-size: 1.3rem;
+            font-size: clamp(1rem, 3.5vw, 1.3rem);
             margin-bottom: 30px;
             text-align: center;
             padding-bottom: 15px;
             font-weight: 300;
-            letter-spacing: 4px;
+            letter-spacing: clamp(2px, 1.5vw, 4px);
             color: #c9a961;
             border-bottom: 1px solid rgba(201, 169, 97, 0.3);
         }
@@ -184,9 +192,12 @@
 
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(7, 1fr);
             gap: 8px;
             margin: 25px 0;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: auto;
         }
 
         .grid-cell {
@@ -207,7 +218,12 @@
             background: rgba(30, 30, 30, 0.8);
             color: #c9a961;
             cursor: pointer;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 50px;
+            text-align: center;
+            flex-shrink: 0;
         }
 
         /* Jigsaw puzzle styles */
@@ -269,17 +285,149 @@
 
         /* Mobile responsive */
         @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
             .title {
-                font-size: 1.8rem;
-                letter-spacing: 5px;
+                margin: 20px 0 30px;
+            }
+
+            .gate-title {
+                margin-bottom: 20px;
+            }
+
+            .gate-content {
+                padding: 20px 15px;
+                font-size: 0.95rem;
+            }
+
+            .verse {
+                padding: 15px;
+                font-size: 0.9rem;
+                line-height: 1.6;
+                margin: 20px 0;
+            }
+
+            .image-container {
+                padding: 15px;
+                margin: 20px 0;
+            }
+
+            .image-container svg {
+                max-width: 100%;
+                height: auto;
+            }
+
+            .image-caption {
+                font-size: 0.8rem;
+            }
+
+            input {
+                padding: 14px;
+                font-size: 1rem;
+            }
+
+            button {
+                padding: 14px;
+                font-size: 1rem;
+            }
+
+            .grid-container {
+                gap: 4px;
+                margin: 15px 0;
+            }
+
+            .grid-cell {
+                font-size: 0.65rem;
+                padding: 4px 2px;
+                min-height: 35px;
+            }
+
+            .tile-option {
+                padding: 8px 10px;
+                font-size: 0.75rem;
+                margin: 3px 2px;
+                min-width: 45px;
             }
 
             .jigsaw-container {
                 max-width: 100%;
+                padding: 0 10px;
+            }
+
+            .jigsaw-grid {
+                gap: 3px;
+                padding: 3px;
             }
 
             .jigsaw-piece {
-                min-height: 100px;
+                min-height: 80px;
+            }
+
+            .feedback {
+                font-size: 1rem;
+                padding: 15px;
+            }
+
+            .admin-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1.1rem;
+                top: 10px;
+                right: 10px;
+            }
+
+            .modal-content {
+                width: 95%;
+                padding: 20px;
+            }
+        }
+
+        /* Extra small phones */
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+
+            .title {
+                margin: 15px 0 25px;
+            }
+
+            .gate-content {
+                padding: 15px 10px;
+                font-size: 0.9rem;
+            }
+
+            .verse {
+                padding: 12px;
+                font-size: 0.85rem;
+            }
+
+            .image-container {
+                padding: 10px;
+                margin: 15px 0;
+            }
+
+            input, button {
+                padding: 12px;
+                font-size: 0.95rem;
+            }
+
+            .grid-cell {
+                font-size: 0.6rem;
+                padding: 3px 1px;
+                min-height: 30px;
+            }
+
+            .tile-option {
+                padding: 6px 8px;
+                font-size: 0.7rem;
+                margin: 2px 1px;
+            }
+
+            .jigsaw-piece {
+                min-height: 60px;
             }
         }
     </style>
@@ -421,7 +569,7 @@
             const [feedback, setFeedback] = useState(null);
             const [showAdmin, setShowAdmin] = useState(false);
             const [answer, setAnswer] = useState('');
-            const [jigsawGrid, setJigsawGrid] = useState(Array(9).fill(''));
+            const [jigsawGrid, setJigsawGrid] = useState(Array(14).fill(''));
 
             const logAttempt = (gate, attempt, correct) => {
                 const key = `gate_${gate}`;
@@ -463,11 +611,12 @@
             };
 
             const handleJigsawSubmit = () => {
-                const correctPhrase = ['SLO', 'W FI', 'RE M', 'AKES', ' MEA', 'T TE', 'NDER'];
+                const correctPhrase = ['SL', 'OW', ' F', 'IR', 'E ', 'MA', 'KE', 'S ', 'ME', 'AT', ' T', 'EN', 'DE', 'R'];
                 const userPhrase = jigsawGrid.filter(p => p).join('');
                 const correctFull = correctPhrase.join('');
                 
-                if (userPhrase === correctFull || userPhrase.replace(/\s/g, '') === 'SLOWFIREMAKESTENDER' || userPhrase.replace(/\s/g, '') === 'SLOWFIREMAKESMEATTENDER') {
+                // Check if user's arrangement matches "SLOW FIRE MAKES MEAT TENDER"
+                if (userPhrase === correctFull || userPhrase.replace(/\s/g, '') === 'SLOWFIREMAKESMEATTENDER') {
                     setFeedback({ type: 'success', message: 'Ancient wisdom revealed.' });
                     logAttempt(5, jigsawGrid.join(''), true);
                     setTimeout(() => {
@@ -476,7 +625,7 @@
                             awaitingHost: true,
                             completedGates: [...prev.completedGates, 5]
                         }));
-                        setJigsawGrid(Array(9).fill(''));
+                        setJigsawGrid(Array(14).fill(''));
                         setFeedback(null);
                     }, 2000);
                 } else {
@@ -1072,8 +1221,8 @@
                                     <div key={i} className="grid-cell">{cell || (i + 1)}</div>
                                 ))}
                             </div>
-                            <div style={{textAlign: 'center', marginTop: '20px'}}>
-                                {['SLO', 'W FI', 'RE M', 'AKES', ' MEA', 'T TE', 'NDER'].map((tile, i) => (
+                            <div style={{textAlign: 'center', marginTop: '20px', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', maxWidth: '100%'}}>
+                                {['AT', 'SL', 'EN', 'IR', 'S ', 'OW', 'DE', 'MA', ' T', 'KE', 'E ', ' F', 'ME', 'R'].map((tile, i) => (
                                     <div 
                                         key={i} 
                                         className="tile-option"
@@ -1093,7 +1242,7 @@
                             </div>
                         </div>
                         <button onClick={onSubmit}>Submit</button>
-                        <button onClick={() => setJigsawGrid(Array(9).fill(''))}>Clear</button>
+                        <button onClick={() => setJigsawGrid(Array(14).fill(''))}>Clear</button>
                     </>
                 ),
                 6: (
