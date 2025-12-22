@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a1a1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Initiation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Crimson Text', Georgia, serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e0e0e0;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin: 30px 0 50px;
+            font-weight: 300;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            color: #f5f5f5;
+            text-shadow: 0 0 20px rgba(255,255,255,0.1);
+        }
+
+        .gate-title {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            text-align: center;
+            padding-bottom: 15px;
+            font-weight: 300;
+            letter-spacing: 4px;
+            color: #c9a961;
+            border-bottom: 1px solid rgba(201, 169, 97, 0.3);
+        }
+
+        .gate-content {
+            background: rgba(30, 30, 30, 0.8);
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(201, 169, 97, 0.2);
+            line-height: 2;
+        }
+
+        .verse {
+            margin: 25px 0;
+            padding: 20px;
+            border-left: 2px solid rgba(201, 169, 97, 0.5);
+            font-style: italic;
+            color: #c9a961;
+            line-height: 1.8;
+        }
+
+        .image-container {
+            margin: 30px 0;
+            text-align: center;
+            border: 2px solid rgba(201, 169, 97, 0.4);
+            padding: 20px;
+            background: rgba(0,0,0,0.5);
+        }
+
+        .puzzle-image {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            min-height: 250px;
+        }
+
+        .image-caption {
+            margin-top: 15px;
+            font-style: italic;
+            color: #c9a961;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+        }
+
+        input {
+            width: 100%;
+            padding: 18px;
+            font-size: 1.1rem;
+            font-family: 'Courier New', monospace;
+            background: rgba(30, 30, 30, 0.9);
+            color: #e0e0e0;
+            border: 1px solid rgba(201, 169, 97, 0.3);
+            margin-bottom: 15px;
+        }
+
+        button {
+            width: 100%;
+            padding: 18px;
+            font-size: 1.1rem;
+            font-family: Georgia, serif;
+            background: rgba(201, 169, 97, 0.15);
+            color: #c9a961;
+            border: 1px solid rgba(201, 169, 97, 0.4);
+            cursor: pointer;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .feedback {
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 1.2rem;
+            font-style: italic;
+            letter-spacing: 2px;
+        }
+
+        .success {
+            background: rgba(76, 175, 80, 0.1);
+            color: #81c784;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .error {
+            background: rgba(244, 67, 54, 0.1);
+            color: #e57373;
+            border: 1px solid rgba(244, 67, 54, 0.3);
+        }
+
+        .admin-btn {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(201, 169, 97, 0.15);
+            color: #c9a961;
+            border: 1px solid rgba(201, 169, 97, 0.4);
+            font-size: 1.3rem;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 2000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: #1a1a1a;
+            padding: 30px;
+            border: 1px solid rgba(201, 169, 97, 0.3);
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin: 25px 0;
+        }
+
+        .grid-cell {
+            aspect-ratio: 1;
+            border: 1px solid rgba(201, 169, 97, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(30, 30, 30, 0.8);
+            color: #c9a961;
+            font-size: 0.85rem;
+        }
+
+        .tile-option {
+            padding: 12px 15px;
+            border: 1px solid rgba(201, 169, 97, 0.3);
+            margin: 4px;
+            background: rgba(30, 30, 30, 0.8);
+            color: #c9a961;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .final-reveal {
+            text-align: center;
+            padding: 100px 20px;
+            animation: fadeIn 4s ease-in;
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .final-sentence {
+            font-size: 2rem;
+            line-height: 2.5;
+            color: #c9a961;
+            font-style: italic;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const HOST_PIN = '7734'; // CHANGE THIS!
+
+        const GATES = {
+            1: { title: 'GATE I', answer: 'LET' },
+            2: { title: 'GATE II', answer: 'US' },
+            3: { title: 'GATE III', answer: 'JUDGE' },
+            4: { title: 'GATE IV', answer: 'KEBAB' },
+            5: { title: 'GATE V', answer: 'FLAME' },
+            6: { title: 'GATE VI', answer: 'WHERE' },
+            7: { title: 'GATE VII', answer: 'FIRE' },
+            8: { title: 'GATE VIII', answer: 'LEARNED' },
+            9: { title: 'GATE IX', answer: 'PATIENCE' }
+        };
+
+        // Rich SVG images
+        const IMAGES = {
+            gate1: `<svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+                <rect width="400" height="300" fill="#1a1a1a"/>
+                <circle cx="200" cy="150" r="80" fill="none" stroke="#c9a961" stroke-width="3"/>
+                <path d="M 200 70 L 200 230" stroke="#c9a961" stroke-width="3"/>
+                <path d="M 120 150 L 280 150" stroke="#c9a961" stroke-width="3"/>
+                <circle cx="200" cy="150" r="40" fill="none" stroke="#c9a961" stroke-width="2" stroke-dasharray="5,5"/>
+                <text x="200" y="270" font-family="Georgia" font-size="16" fill="#c9a961" text-anchor="middle" font-style="italic">The key is the lock</text>
+            </svg>`,
+
+            gate2: `<svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+                <rect width="400" height="300" fill="#1a1a1a"/>
+                <circle cx="150" cy="150" r="60" fill="none" stroke="#c9a961" stroke-width="3"/>
+                <circle cx="250" cy="150" r="60" fill="none" stroke="#c9a961" stroke-width="3"/>
+                <path d="M 150 90 Q 200 120 250 90" fill="none" stroke="#c9a961" stroke-width="2"/>
+                <path d="M 150 210 Q 200 180 250 210" fill="none" stroke="#c9a961" stroke-width="2"/>
+                <ellipse cx="200" cy="150" rx="80" ry="60" fill="none" stroke="#c9a961" stroke-width="3" opacity="0.5"/>
+                <text x="200" y="270" font-family="Georgia" font-size="16" fill="#c9a961" text-anchor="middle" font-style="italic">Two become one</text>
+            </svg>`,
+
+            gate3: `<svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+                <rect width="400" height="300" fill="#1a1a1a"/>
+                <line x1="200" y1="60" x2="200" y2="240" stroke="#c9a961" stroke-width="3"/>
+                <line x1="100" y1="60" x2="300" y2="60" stroke="#c9a961" stroke-width="3"/>
+                <line x1="110" y1="60" x2="110" y2="90" stroke="#c9a961" stroke-width="2"/>
+                <line x1="290" y1="60" x2="290" y2="90" stroke="#c9a961" stroke-width="2"/>
+                <rect x="90" y="90" width="40" height="30" fill="none" stroke="#c9a961" stroke-width="2"/>
+                <rect x="270" y="90" width="40" height="30" fill="none" stroke="#c9a961" stroke-width="2"/>
+                <circle cx="200" cy="250" r="20" fill="none" stroke="#c9a961" stroke-width="3"/>
+                <text x="200" y="285" font-family="Georgia" font-size="16" fill="#c9a961" text-anchor="middle" font-style="italic">What remains in your power?</text>
+            </svg>`,
+
+            gate4: `<svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+                <rect width="400" height="300" fill="#1a1a1a"/>
+                <circle cx="200" cy="120" r="70" fill="none" stroke="#c9a961" stroke-width="3"/>
+                <text x="200" y="70" font-family="Georgia" font-size="20" fill="#c9a961" text-anchor="middle">English</text>
+                <text x="200" y="130" font-family="Georgia" font-size="24" fill="#c9a961" text-anchor="middle" font-weight="bold">?</text>
+                <text x="130" y="180" font-family="Georgia" font-size="16" fill="#c9a961" text-anchor="middle">Turkish</text>
+                <text x="270" y="180" font-family="Georgia" font-size="16" fill="#c9a961" text-anchor="middle">Arabic</text>
+                <text x="130" y="220" font-family="Georgia" font-size="16" fill="#c9a961" text-anchor="middle">German</text>
+                <text x="270" y="220" font-family="Georgia" font-size="16" fill="#c9a961" text-anchor="middle">Hindi</text>
+                <text x="200" y="280" font-family="Georgia" font-size="14" fill="#c9a961" text-anchor="middle" font-style="italic">Unchanged across all tongues</text>
+            </svg>`,
+
+            gate5: `<svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+                <rect width="400" height="300" fill="#1a1a1a"/>
+                <path d="M 200 80 L 180 140 L 220 140 Z" fill="none" stroke="#c9a961" stroke-width="3"/>
+                <path d="M 200 140 L 180 200 L 220 200 Z" fill="none" stroke="#c9a961" stroke-width="3"/>
+                <path d="M 200 200 L 170 260 L 230 260 Z" fill="none" stroke="#c9a961" stroke-width="3"/>
+                <circle cx="200" cy="65" r="8" fill="#c9a961"/>
+                <line x1="150" y1="260" x2="250" y2="260" stroke="#c9a961" stroke-width="4"/>
+                <text x="200" y="285" font-family="Georgia" font-size="14" fill="#c9a961" text-anchor="middle" font-style="italic">Time transforms through heat</text>
+            </svg>`,
+
+            gate6: `<svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+                <rect width="400" height="300" fill="#1a1a1a"/>
+                <circle cx="200" cy="120" r="50" fill="none" stroke="#c9a961" stroke-width="3" stroke-dasharray="10,5"/>
+                <text x="200" y="130" font-family="Georgia" font-size="36" fill="#c9a961" text-anchor="middle">?</text>
+                <path d="M 140 170 L 200 220 L 260 170" fill="none" stroke="#c9a961" stroke-width="3"/>
+                <text x="200" y="255" font-family="Georgia" font-size="16" fill="#c9a961" text-anchor="middle">Culture</text>
+                <text x="200" y="285" font-family="Georgia" font-size="14" fill="#c9a961" text-anchor="middle" font-style="italic">The question that seeks place</text>
+            </svg>`,
+
+            gate7: `<svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+                <rect width="400" height="300" fill="#1a1a1a"/>
+                <g transform="translate(50, 50)">
+                    <text x="0" y="0" font-family="Courier" font-size="20" fill="#888" letter-spacing="8">F ░ I ░ R ░ E</text>
+                    <text x="0" y="35" font-family="Courier" font-size="20" fill="#888" letter-spacing="8">░ L ░ A ░ M ░</text>
+                    <text x="0" y="70" font-family="Courier" font-size="20" fill="#888" letter-spacing="8">░ ░ H ░ E ░ A</text>
+                    <text x="0" y="105" font-family="Courier" font-size="20" fill="#888" letter-spacing="8">░ ░ ░ B ░ U ░</text>
+                    <text x="0" y="140" font-family="Courier" font-size="20" fill="#888" letter-spacing="8">░ ░ ░ ░ I ░ G</text>
+                    <text x="0" y="175" font-family="Courier" font-size="20" fill="#888" letter-spacing="8">░ ░ ░ ░ ░ L ░</text>
+                </g>
+                <line x1="50" y1="50" x2="330" y2="225" stroke="#c9a961" stroke-width="2" opacity="0.3"/>
+                <text x="200" y="285" font-family="Georgia" font-size="14" fill="#c9a961" text-anchor="middle" font-style="italic">Follow the golden thread</text>
+            </svg>`,
+
+            gate8: `<svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+                <rect width="400" height="300" fill="#1a1a1a"/>
+                <circle cx="120" cy="120" r="40" fill="none" stroke="#888" stroke-width="2"/>
+                <text x="120" y="130" font-family="Georgia" font-size="16" fill="#888" text-anchor="middle">KNOWN</text>
+                <circle cx="280" cy="120" r="40" fill="none" stroke="#c9a961" stroke-width="3"/>
+                <text x="280" y="130" font-family="Georgia" font-size="16" fill="#c9a961" text-anchor="middle">?</text>
+                <path d="M 120 170 L 120 210 M 280 170 L 280 210" stroke="#c9a961" stroke-width="2"/>
+                <text x="120" y="230" font-family="Georgia" font-size="12" fill="#888" text-anchor="middle">Innate</text>
+                <text x="280" y="230" font-family="Georgia" font-size="12" fill="#c9a961" text-anchor="middle">Earned</text>
+                <text x="200" y="275" font-family="Georgia" font-size="14" fill="#c9a961" text-anchor="middle" font-style="italic">Through time and repetition</text>
+            </svg>`,
+
+            gate9: `<svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+                <rect width="400" height="300" fill="#1a1a1a"/>
+                <path d="M 150 60 L 250 60 L 220 110 L 200 150 L 180 110 Z" fill="none" stroke="#c9a961" stroke-width="3"/>
+                <circle cx="200" cy="150" r="5" fill="#c9a961"/>
+                <path d="M 180 190 L 200 150 L 220 190 L 250 240 L 150 240 Z" fill="none" stroke="#c9a961" stroke-width="3"/>
+                <line x1="140" y1="60" x2="260" y2="60" stroke="#c9a961" stroke-width="3"/>
+                <line x1="140" y1="240" x2="260" y2="240" stroke="#c9a961" stroke-width="3"/>
+                <text x="200" y="280" font-family="Georgia" font-size="14" fill="#c9a961" text-anchor="middle" font-style="italic">Time bound, yet timeless</text>
+            </svg>`
+        };
+
+        function App() {
+            const [progress, setProgress] = useState({
+                currentGate: 1,
+                completedGates: [],
+                awaitingHost: false,
+                gameComplete: false,
+                attempts: {}
+            });
+
+            const [feedback, setFeedback] = useState(null);
+            const [showAdmin, setShowAdmin] = useState(false);
+            const [answer, setAnswer] = useState('');
+            const [jigsawGrid, setJigsawGrid] = useState(Array(9).fill(''));
+
+            // No localStorage - fresh start every time!
+
+            const logAttempt = (gate, attempt, correct) => {
+                const key = `gate_${gate}`;
+                setProgress(prev => ({
+                    ...prev,
+                    attempts: {
+                        ...prev.attempts,
+                        [key]: [...(prev.attempts[key] || []), {
+                            attempt,
+                            correct,
+                            timestamp: new Date().toISOString()
+                        }]
+                    }
+                }));
+            };
+
+            const checkAnswer = (gate, correctAnswer, userAnswer) => {
+                const normalized = userAnswer.trim().toUpperCase();
+                if (normalized === correctAnswer) {
+                    setFeedback({ type: 'success', message: getSuccessMessage(gate) });
+                    logAttempt(gate, userAnswer, true);
+                    setTimeout(() => {
+                        if (gate === 9) {
+                            setProgress(prev => ({ ...prev, gameComplete: true, completedGates: [...prev.completedGates, gate] }));
+                        } else {
+                            setProgress(prev => ({
+                                ...prev,
+                                awaitingHost: true,
+                                completedGates: [...prev.completedGates, gate]
+                            }));
+                        }
+                        setAnswer('');
+                        setFeedback(null);
+                    }, 2000);
+                } else {
+                    setFeedback({ type: 'error', message: getErrorMessage(gate) });
+                    logAttempt(gate, userAnswer, false);
+                }
+            };
+
+            const handleJigsawSubmit = () => {
+                const correctPhrase = ['SLO', 'W FI', 'RE M', 'AKES', ' TEN', 'DER', ' MEA', 'T', ''];
+                const allCorrect = correctPhrase.every((piece, index) => {
+                    if (piece === '') return !jigsawGrid[index] || jigsawGrid[index] === '';
+                    return jigsawGrid[index] === piece;
+                });
+                
+                if (allCorrect) {
+                    setFeedback({ type: 'success', message: 'Ancient wisdom revealed.' });
+                    logAttempt(5, jigsawGrid.join(''), true);
+                    setTimeout(() => {
+                        setProgress(prev => ({
+                            ...prev,
+                            awaitingHost: true,
+                            completedGates: [...prev.completedGates, 5]
+                        }));
+                        setJigsawGrid(Array(9).fill(''));
+                        setFeedback(null);
+                    }, 2000);
+                } else {
+                    setFeedback({ type: 'error', message: 'Not the right order.' });
+                    logAttempt(5, jigsawGrid.join(''), false);
+                }
+            };
+
+            const getSuccessMessage = (gate) => {
+                const messages = {
+                    1: 'Permission granted.',
+                    2: 'Unified.',
+                    3: 'Sovereignty achieved.',
+                    4: 'The invariant revealed.',
+                    5: 'Ancient wisdom revealed.',
+                    6: 'The inquiry stands.',
+                    7: 'Light breaks through.',
+                    8: 'Knowledge earned.',
+                    9: 'The final virtue embodied.'
+                };
+                return messages[gate] || 'Truth.';
+            };
+
+            const getErrorMessage = (gate) => {
+                const messages = {
+                    1: 'The gate remains closed.',
+                    2: 'Division persists.',
+                    3: 'External forces bind you.',
+                    4: 'It changes. Try again.',
+                    5: 'The wisdom eludes you.',
+                    6: 'The question is wrong.',
+                    7: 'Still in darkness.',
+                    8: 'Not yet acquired.',
+                    9: 'Haste defeats you.'
+                };
+                return messages[gate] || 'No.';
+            };
+
+            const hostApprove = (pin) => {
+                if (pin === HOST_PIN) {
+                    setProgress(prev => ({
+                        ...prev,
+                        currentGate: prev.currentGate + 1,
+                        awaitingHost: false
+                    }));
+                    setShowAdmin(false);
+                    setFeedback({ type: 'success', message: 'Passage granted.' });
+                    setTimeout(() => setFeedback(null), 2000);
+                } else {
+                    setFeedback({ type: 'error', message: 'Denied.' });
+                }
+            };
+
+            const resetProgress = () => {
+                if (confirm('Restart from the beginning?')) {
+                    window.location.reload();
+                }
+            };
+
+            if (progress.gameComplete) {
+                return <FinalRevealSequence />;
+            }
+
+            if (progress.awaitingHost) {
+                return (
+                    <>
+                        <AdminPanel 
+                            onApprove={hostApprove}
+                            onReset={resetProgress}
+                            progress={progress}
+                            show={showAdmin}
+                            setShow={setShowAdmin}
+                        />
+                        <div style={{textAlign: 'center', padding: '80px 20px', minHeight: '70vh'}}>
+                            <h2 style={{fontSize: '2rem', margin: '40px 0', letterSpacing: '6px', fontWeight: 300, color: '#c9a961'}}>
+                                Return to Saggu.
+                            </h2>
+                            <div style={{color: '#888', fontStyle: 'italic', marginTop: '30px'}}>
+                                The gate yields. Await the seal.
+                            </div>
+                        </div>
+                    </>
+                );
+            }
+
+            return (
+                <>
+                    <AdminPanel 
+                        onApprove={hostApprove}
+                        onReset={resetProgress}
+                        progress={progress}
+                        show={showAdmin}
+                        setShow={setShowAdmin}
+                    />
+                    <div className="container">
+                        <h1 className="title">Initiation</h1>
+                        
+                        {feedback && (
+                            <div className={`feedback ${feedback.type}`}>
+                                {feedback.message}
+                            </div>
+                        )}
+                        <Gate 
+                            number={progress.currentGate}
+                            answer={answer}
+                            setAnswer={setAnswer}
+                            jigsawGrid={jigsawGrid}
+                            setJigsawGrid={setJigsawGrid}
+                            onSubmit={() => {
+                                if (progress.currentGate === 5) {
+                                    handleJigsawSubmit();
+                                } else {
+                                    checkAnswer(progress.currentGate, GATES[progress.currentGate].answer, answer);
+                                }
+                            }}
+                        />
+                    </div>
+                </>
+            );
+        }
+
+        function AdminPanel({ onApprove, onReset, progress, show, setShow }) {
+            const [pin, setPin] = useState('');
+            const [authenticated, setAuthenticated] = useState(false);
+            const [showAnswers, setShowAnswers] = useState(false);
+
+            const handlePinSubmit = () => {
+                if (pin === HOST_PIN) {
+                    setAuthenticated(true);
+                } else {
+                    alert('Denied');
+                    setPin('');
+                }
+            };
+
+            const handleApprove = () => {
+                onApprove(pin);
+                setPin('');
+                setAuthenticated(false);
+            };
+
+            const handleClose = () => {
+                setShow(false);
+                setAuthenticated(false);
+                setPin('');
+                setShowAnswers(false);
+            };
+
+            return (
+                <>
+                    <button className="admin-btn" onClick={() => setShow(true)}>⚙</button>
+                    <div className={`modal ${show ? 'active' : ''}`} onClick={handleClose}>
+                        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                            <h3 style={{marginBottom: '20px', letterSpacing: '3px', textAlign: 'center', color: '#c9a961'}}>
+                                HOST PANEL
+                            </h3>
+                            
+                            {!authenticated ? (
+                                <div>
+                                    <p style={{marginBottom: '20px', color: '#888', textAlign: 'center'}}>
+                                        Enter host seal
+                                    </p>
+                                    <input
+                                        type="password"
+                                        placeholder="PIN"
+                                        value={pin}
+                                        onChange={(e) => setPin(e.target.value)}
+                                        onKeyPress={(e) => e.key === 'Enter' && handlePinSubmit()}
+                                    />
+                                    <button onClick={handlePinSubmit}>Authenticate</button>
+                                    <button onClick={handleClose}>Cancel</button>
+                                </div>
+                            ) : (
+                                <div>
+                                    <div style={{marginBottom: '15px', color: '#999'}}>
+                                        Gate: {progress.currentGate} | Completed: {progress.completedGates.join(', ') || 'None'}
+                                    </div>
+                                    
+                                    {progress.awaitingHost && (
+                                        <div style={{marginTop: '20px', marginBottom: '20px'}}>
+                                            <p style={{color: '#81c784', marginBottom: '15px'}}>
+                                                ✓ Gate {progress.completedGates[progress.completedGates.length - 1]} complete
+                                            </p>
+                                            <button onClick={handleApprove}>Grant Passage</button>
+                                        </div>
+                                    )}
+                                    
+                                    <button onClick={onReset}>Reset All</button>
+                                    <button onClick={() => setShowAnswers(!showAnswers)}>
+                                        {showAnswers ? 'Hide' : 'Show'} Keys
+                                    </button>
+                                    
+                                    {showAnswers && (
+                                        <div style={{marginTop: '15px', padding: '15px', background: 'rgba(0,0,0,0.5)', fontSize: '0.9rem'}}>
+                                            {Object.entries(GATES).map(([num, gate]) => (
+                                                <div key={num} style={{margin: '5px 0', color: '#c9a961'}}>
+                                                    {num}: {gate.answer}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                    
+                                    <button onClick={handleClose}>Close</button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </>
+            );
+        }
+
+        function FinalRevealSequence() {
+            const [stage, setStage] = useState('sentence'); // sentence -> puzzle -> reveal
+            const [answer, setAnswer] = useState('');
+            const [feedback, setFeedback] = useState('');
+
+            useEffect(() => {
+                if (stage === 'sentence') {
+                    const timer = setTimeout(() => setStage('puzzle'), 5000);
+                    return () => clearTimeout(timer);
+                }
+            }, [stage]);
+
+            const checkFinalAnswer = () => {
+                const normalized = answer.trim().toUpperCase();
+                if (normalized === 'TURKEY' || normalized === 'TÜRKIYE') {
+                    setStage('reveal');
+                } else {
+                    setFeedback('Look closer at the symbols...');
+                    setTimeout(() => setFeedback(''), 2000);
+                }
+            };
+
+            if (stage === 'reveal') {
+                return (
+                    <div className="final-reveal">
+                        <div style={{
+                            fontSize: '5rem',
+                            letterSpacing: '15px',
+                            color: '#c9a961',
+                            marginBottom: '40px',
+                            animation: 'finalPulse 2s ease-in-out',
+                            fontWeight: '300'
+                        }}>
+                            TURKEY
+                        </div>
+                        <div style={{fontSize: '4rem', margin: '30px 0'}}>🇹🇷</div>
+                        <div style={{
+                            fontSize: '1.4rem',
+                            color: '#d0d0d0',
+                            fontStyle: 'italic',
+                            maxWidth: '500px',
+                            margin: '40px auto',
+                            lineHeight: 2
+                        }}>
+                            Where ancient fires still burn slow.<br/>
+                            Where patience transforms meat to art.<br/>
+                            Where we shall judge kebab together.
+                        </div>
+                        
+                        <style>{`
+                            @keyframes finalPulse {
+                                0%, 100% { opacity: 1; transform: scale(1); }
+                                50% { opacity: 0.8; transform: scale(1.05); }
+                            }
+                        `}</style>
+                    </div>
+                );
+            }
+
+            if (stage === 'puzzle') {
+                return (
+                    <div className="container" style={{paddingTop: '40px'}}>
+                        <div style={{
+                            fontSize: '1.8rem',
+                            color: '#c9a961',
+                            textAlign: 'center',
+                            margin: '30px 0',
+                            letterSpacing: '4px',
+                            fontStyle: 'italic'
+                        }}>
+                            The words you gathered speak:
+                        </div>
+
+                        <div style={{
+                            fontSize: '1.5rem',
+                            textAlign: 'center',
+                            color: '#d0d0d0',
+                            fontStyle: 'italic',
+                            margin: '30px 0',
+                            lineHeight: 2
+                        }}>
+                            "Let us judge kebab<br/>
+                            where fire learned patience."
+                        </div>
+
+                        <div style={{
+                            fontSize: '2rem',
+                            color: '#c9a961',
+                            textAlign: 'center',
+                            margin: '50px 0 30px',
+                            letterSpacing: '6px'
+                        }}>
+                            WHERE?
+                        </div>
+
+                        <div className="gate-content">
+                            <div className="image-container">
+                                <svg width="400" height="400" xmlns="http://www.w3.org/2000/svg" style={{maxWidth: '100%', height: 'auto', display: 'block', margin: '0 auto'}}>
+                                    <rect width="400" height="400" fill="#1a1a1a"/>
+                                    
+                                    <rect x="50" y="50" width="300" height="200" fill="#E30A17" opacity="0.2"/>
+                                    
+                                    <circle cx="160" cy="150" r="65" fill="none" stroke="#c9a961" strokeWidth="5"/>
+                                    <circle cx="177" cy="150" r="53" fill="#1a1a1a"/>
+                                    
+                                    <path d="M 260 150 L 277 185 L 250 162 L 270 162 L 243 185 Z" 
+                                          fill="none" stroke="#c9a961" strokeWidth="4"/>
+                                    
+                                    <line x1="100" y1="280" x2="100" y2="360" stroke="#c9a961" strokeWidth="5"/>
+                                    <ellipse cx="100" cy="290" rx="35" ry="18" fill="none" stroke="#c9a961" strokeWidth="3"/>
+                                    <ellipse cx="100" cy="310" rx="35" ry="18" fill="none" stroke="#c9a961" strokeWidth="3"/>
+                                    <ellipse cx="100" cy="330" rx="35" ry="18" fill="none" stroke="#c9a961" strokeWidth="3"/>
+                                    <ellipse cx="100" cy="350" rx="35" ry="18" fill="none" stroke="#c9a961" strokeWidth="3"/>
+                                    
+                                    <line x1="220" y1="310" x2="350" y2="310" stroke="#c9a961" strokeWidth="4"/>
+                                    <line x1="235" y1="270" x2="235" y2="310" stroke="#c9a961" strokeWidth="3"/>
+                                    <line x1="335" y1="270" x2="335" y2="310" stroke="#c9a961" strokeWidth="3"/>
+                                    <path d="M 220 310 Q 220 330 235 340" stroke="#c9a961" strokeWidth="2" fill="none"/>
+                                    <path d="M 350 310 Q 350 330 335 340" stroke="#c9a961" strokeWidth="2" fill="none"/>
+                                </svg>
+                                <div className="image-caption" style={{fontSize: '1rem', lineHeight: 1.8, marginTop: '20px'}}>
+                                    A crescent moon upon a crimson field.<br/>
+                                    A five-pointed star beside it.<br/>
+                                    Meat rotating over endless flame.<br/>
+                                    A bridge spanning two continents.<br/>
+                                    <br/>
+                                    <strong>What nation?</strong>
+                                </div>
+                            </div>
+
+                            {feedback && (
+                                <div style={{
+                                    textAlign: 'center',
+                                    color: '#e57373',
+                                    fontStyle: 'italic',
+                                    margin: '20px 0'
+                                }}>
+                                    {feedback}
+                                </div>
+                            )}
+
+                            <input
+                                type="text"
+                                placeholder="Name the place"
+                                value={answer}
+                                onChange={(e) => setAnswer(e.target.value)}
+                                onKeyPress={(e) => e.key === 'Enter' && checkFinalAnswer()}
+                                style={{
+                                    fontSize: '1.3rem',
+                                    textAlign: 'center',
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '3px',
+                                    marginTop: '20px'
+                                }}
+                            />
+                            <button onClick={checkFinalAnswer} style={{marginTop: '15px'}}>
+                                Submit Final Answer
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            // Stage: sentence
+            return (
+                <div className="final-reveal">
+                    <div className="final-sentence" style={{fontSize: '2rem'}}>
+                        Let us judge kebab<br/>
+                        where fire learned patience.
+                    </div>
+                    <div style={{
+                        marginTop: '60px',
+                        fontSize: '1.1rem',
+                        color: '#888',
+                        fontStyle: 'italic'
+                    }}>
+                        The nine gates have yielded their words...
+                    </div>
+                </div>
+            );
+        }
+
+        function Gate({ number, answer, setAnswer, jigsawGrid, setJigsawGrid, onSubmit }) {
+            const SVGImage = ({ data, caption }) => (
+                <div className="image-container">
+                    <div dangerouslySetInnerHTML={{__html: data}} />
+                    {caption && <div className="image-caption">{caption}</div>}
+                </div>
+            );
+
+            const gates = {
+                1: (
+                    <>
+                        <h2 className="gate-title">GATE I</h2>
+                        <div className="gate-content">
+                            <SVGImage data={IMAGES.gate1} caption="The key is within the lock" />
+                            <div className="verse">
+                                The door asks permission of itself.<br/>
+                                The word that opens is the word that grants.<br/>
+                                No key exists outside the lock.
+                            </div>
+                            <p style={{textAlign: 'center', color: '#d0d0d0', fontStyle: 'italic'}}>
+                                What single syllable permits its own utterance?
+                            </p>
+                        </div>
+                        <input
+                            type="text"
+                            placeholder="Speak the word"
+                            value={answer}
+                            onChange={(e) => setAnswer(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && onSubmit()}
+                        />
+                        <button onClick={onSubmit}>Submit</button>
+                    </>
+                ),
+                2: (
+                    <>
+                        <h2 className="gate-title">GATE II</h2>
+                        <div className="gate-content">
+                            <SVGImage data={IMAGES.gate2} caption="Two circles merge into one" />
+                            <div className="verse">
+                                Two rivers meet without speaking.<br/>
+                                Two flames merge without negotiation.<br/>
+                                What word names the union?
+                            </div>
+                            <p style={{textAlign: 'center', color: '#d0d0d0', fontStyle: 'italic'}}>
+                                Not I. Not you. What remains?
+                            </p>
+                        </div>
+                        <input
+                            type="text"
+                            placeholder="The word of unity"
+                            value={answer}
+                            onChange={(e) => setAnswer(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && onSubmit()}
+                        />
+                        <button onClick={onSubmit}>Submit</button>
+                    </>
+                ),
+                3: (
+                    <>
+                        <h2 className="gate-title">GATE III</h2>
+                        <div className="gate-content">
+                            <SVGImage data={IMAGES.gate3} caption="The scales of sovereignty" />
+                            <div className="verse">
+                                The storm arrives. You cannot stop it.<br/>
+                                The dice are cast. You cannot reroll them.<br/>
+                                Others speak. You cannot silence them.
+                            </div>
+                            <p style={{textAlign: 'center', color: '#d0d0d0', fontStyle: 'italic'}}>
+                                What action survives the stripping of circumstance?
+                            </p>
+                        </div>
+                        <input
+                            type="text"
+                            placeholder="The sovereign act"
+                            value={answer}
+                            onChange={(e) => setAnswer(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && onSubmit()}
+                        />
+                        <button onClick={onSubmit}>Submit</button>
+                    </>
+                ),
+                4: (
+                    <>
+                        <h2 className="gate-title">GATE IV</h2>
+                        <div className="gate-content">
+                            <SVGImage data={IMAGES.gate4} caption="One word, many languages" />
+                            <div className="verse">
+                                A word walks through borders without passport.<br/>
+                                Unchanged in Tokyo, unchanged in Tehran.<br/>
+                                The linguistic constant.
+                            </div>
+                            <p style={{textAlign: 'center', color: '#d0d0d0', fontStyle: 'italic'}}>
+                                Consider meat transformed by sustained heat.<br/>
+                                What word needs no translation?
+                            </p>
+                        </div>
+                        <input
+                            type="text"
+                            placeholder="The unchanging name"
+                            value={answer}
+                            onChange={(e) => setAnswer(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && onSubmit()}
+                        />
+                        <button onClick={onSubmit}>Submit</button>
+                    </>
+                ),
+                5: (
+                    <>
+                        <h2 className="gate-title">GATE V</h2>
+                        <div className="gate-content">
+                            <SVGImage data={IMAGES.gate5} caption="Fire descends to the hearth" />
+                            <div className="verse">
+                                Nine fragments hold one truth.<br/>
+                                The ancients knew what haste forgets.<br/>
+                                Time is the ingredient absent from the recipe.
+                            </div>
+                            <div className="grid-container">
+                                {jigsawGrid.map((cell, i) => (
+                                    <div key={i} className="grid-cell">{cell || (i + 1)}</div>
+                                ))}
+                            </div>
+                            <div style={{textAlign: 'center', marginTop: '20px'}}>
+                                {['SLO', 'W FI', 'RE M', 'AKES', ' TEN', 'DER', ' MEA', 'T'].map((tile, i) => (
+                                    <div 
+                                        key={i} 
+                                        className="tile-option"
+                                        onClick={() => {
+                                            const emptyPos = jigsawGrid.findIndex(c => !c);
+                                            if (emptyPos !== -1) {
+                                                const newGrid = [...jigsawGrid];
+                                                newGrid[emptyPos] = tile;
+                                                setJigsawGrid(newGrid);
+                                            }
+                                        }}
+                                        style={{opacity: jigsawGrid.includes(tile) ? 0.3 : 1}}
+                                    >
+                                        {tile}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        <button onClick={onSubmit}>Submit</button>
+                        <button onClick={() => setJigsawGrid(Array(9).fill(''))}>Clear</button>
+                    </>
+                ),
+                6: (
+                    <>
+                        <h2 className="gate-title">GATE VI</h2>
+                        <div className="gate-content">
+                            <SVGImage data={IMAGES.gate6} caption="The question mark above culture" />
+                            <div className="verse">
+                                Location is not coordinates on parchment.<br/>
+                                Place is not latitude measured by instruments.<br/>
+                                The question precedes the answer.
+                            </div>
+                            <p style={{textAlign: 'center', color: '#d0d0d0', fontStyle: 'italic'}}>
+                                What word asks 'at what place' without demanding numbers?
+                            </p>
+                        </div>
+                        <input
+                            type="text"
+                            placeholder="The question of place"
+                            value={answer}
+                            onChange={(e) => setAnswer(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && onSubmit()}
+                        />
+                        <button onClick={onSubmit}>Submit</button>
+                    </>
+                ),
+                7: (
+                    <>
+                        <h2 className="gate-title">GATE VII</h2>
+                        <div className="gate-content">
+                            <SVGImage data={IMAGES.gate7} caption="Follow the diagonal path" />
+                            <div className="verse">
+                                Look not at the letters.<br/>
+                                Look through them.<br/>
+                                The diagonal reveals what the horizontal conceals.
+                            </div>
+                        </div>
+                        <input
+                            type="text"
+                            placeholder="The hidden element"
+                            value={answer}
+                            onChange={(e) => setAnswer(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && onSubmit()}
+                        />
+                        <button onClick={onSubmit}>Submit</button>
+                    </>
+                ),
+                8: (
+                    <>
+                        <h2 className="gate-title">GATE VIII</h2>
+                        <div className="gate-content">
+                            <SVGImage data={IMAGES.gate8} caption="Two forms of knowledge" />
+                            <div className="verse">
+                                That which arrives with birth—<br/>
+                                possessed without study, known without teaching.<br/>
+                                <br/>
+                                That which arrives through repetition—<br/>
+                                earned through error, won through practice.
+                            </div>
+                            <p style={{textAlign: 'center', color: '#d0d0d0', fontStyle: 'italic'}}>
+                                Fire knows heat. Patience is _______.<br/>
+                                What seven-letter past-tense verb names the second form?
+                            </p>
+                        </div>
+                        <input
+                            type="text"
+                            placeholder="Knowledge through time"
+                            value={answer}
+                            onChange={(e) => setAnswer(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && onSubmit()}
+                        />
+                        <button onClick={onSubmit}>Submit</button>
+                    </>
+                ),
+                9: (
+                    <>
+                        <h2 className="gate-title">GATE IX</h2>
+                        <div className="gate-content">
+                            <SVGImage data={IMAGES.gate9} caption="The hourglass of virtue" />
+                            <div className="verse">
+                                Eight letters. Three vowels. P begins. E ends.<br/>
+                                <br/>
+                                It names the quality required to solve this gate.<br/>
+                                Force cannot achieve it.<br/>
+                                Haste negates it.<br/>
+                                Practice cultivates it.<br/>
+                                <br/>
+                                Fire teaches it to meat.<br/>
+                                Time teaches it to humans.
+                            </div>
+                        </div>
+                        <input
+                            type="text"
+                            placeholder="The final virtue"
+                            value={answer}
+                            onChange={(e) => setAnswer(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && onSubmit()}
+                        />
+                        <button onClick={onSubmit}>Submit</button>
+                    </>
+                )
+            };
+
+            return gates[number] || <div>Gate not found</div>;
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
