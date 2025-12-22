@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#2c3e50">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Initiation">
+    <title>Initiation</title>
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiSW5pdGlhdGlvbiIsInNob3J0X25hbWUiOiJJbml0aWF0aW9uIiwic3RhcnRfdXJsIjoiLiIsImRpc3BsYXkiOiJzdGFuZGFsb25lIiwiYmFja2dyb3VuZF9jb2xvciI6IiNmOGY5ZmEiLCJ0aGVtZV9jb2xvciI6IiMyYzNlNTAiLCJpY29ucyI6W3sic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sLCUzQ3N2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxOTInIGhlaWdodD0nMTkyJyUzRSUzQ3JlY3Qgd2lkdGg9JzE5MicgaGVpZ2h0PScxOTInIGZpbGw9JyUyMzJjM2U1MCcvJTNFJTNDdGV4dCB4PSc1MCUyNScgeT0nNTAlMjUnIGZvbnQtc2l6ZT0nODAnIGZpbGw9JyUyM2Y4ZjlmYScgdGV4dC1hbmNob3I9J21pZGRsZScgZHk9Jy4zZW0nJTNFJUYwJTlGJTk0JUE1JTNDJTJGdGV4dCUzRSUzQyUyRnN2ZyUzRSIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIn1dfQ==">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: Georgia, serif;
+            background: #f8f9fa;
+            color: #2c3e50;
+            overflow-x: hidden;
+            touch-action: manipulation;
+        }
+
+        #root {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            flex: 1;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin: 20px 0 40px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .gate-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 10px;
+        }
+
+        .gate-content {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        .gate-content ul {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+
+        .gate-content li {
+            margin: 8px 0;
+        }
+
+        .input-container {
+            margin: 20px 0;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-family: 'Courier New', monospace;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            background: white;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        button {
+            width: 100%;
+            padding: 18px;
+            font-size: 1.2rem;
+            font-family: Georgia, serif;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            letter-spacing: 1px;
+            transition: background 0.3s;
+            margin-bottom: 10px;
+        }
+
+        button:active {
+            background: #2980b9;
+            transform: scale(0.98);
+        }
+
+        .secondary-btn {
+            background: #95a5a6;
+        }
+
+        .secondary-btn:active {
+            background: #7f8c8d;
+        }
+
+        .feedback {
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 2px solid #bee5eb;
+        }
+
+        .waiting-screen {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .waiting-screen h2 {
+            font-size: 2rem;
+            margin: 40px 0;
+            letter-spacing: 3px;
+        }
+
+        .final-reveal {
+            text-align: center;
+            padding: 80px 20px;
+            animation: fadeIn 3s ease-in;
+        }
+
+        .final-reveal .sentence {
+            font-size: 2rem;
+            line-height: 2;
+            margin: 60px 0;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .grid-cell {
+            aspect-ratio: 1;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            background: white;
+            padding: 5px;
+            text-align: center;
+        }
+
+        .tile-option {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            margin: 5px;
+            background: white;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+        }
+
+        .tile-option:active {
+            background: #e8f4f8;
+            border-color: #3498db;
+        }
+
+        .pre-text {
+            font-family: 'Courier New', monospace;
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            white-space: pre;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .admin-panel {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+        }
+
+        .admin-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #95a5a6;
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal h3 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Configuration
+        const HOST_PIN = '7734'; // CHANGE THIS!
+
+        const GATES = {
+            1: { title: 'GATE I', answer: 'LET' },
+            2: { title: 'GATE II', answer: 'US' },
+            3: { title: 'GATE III', answer: 'JUDGE' },
+            4: { title: 'GATE IV', answer: 'KEBAB' },
+            5: { title: 'GATE V', answer: 'JIGSAW' },
+            6: { title: 'GATE VI', answer: 'WHERE' },
+            7: { title: 'GATE VII', answer: 'FIRE' },
+            8: { title: 'GATE VIII', answer: 'LEARNED' },
+            9: { title: 'GATE IX', answer: 'PATIENCE' }
+        };
+
+        function App() {
+            const [progress, setProgress] = useState(() => {
+                const saved = localStorage.getItem('initiation_progress');
+                return saved ? JSON.parse(saved) : {
+                    currentGate: 1,
+                    completedGates: [],
+                    awaitingHost: false,
+                    gameComplete: false,
+                    attempts: {}
+                };
+            });
+
+            const [feedback, setFeedback] = useState(null);
+            const [showAdmin, setShowAdmin] = useState(false);
+
+            useEffect(() => {
+                localStorage.setItem('initiation_progress', JSON.stringify(progress));
+            }, [progress]);
+
+            const logAttempt = (gate, attempt, correct) => {
+                const key = `gate_${gate}`;
+                setProgress(prev => ({
+                    ...prev,
+                    attempts: {
+                        ...prev.attempts,
+                        [key]: [...(prev.attempts[key] || []), {
+                            attempt,
+                            correct,
+                            timestamp: new Date().toISOString()
+                        }]
+                    }
+                }));
+            };
+
+            const checkAnswer = (gate, correctAnswer, userAnswer) => {
+                const normalized = userAnswer.trim().toUpperCase();
+                if (normalized === correctAnswer) {
+                    setFeedback({ type: 'success', message: getSuccessMessage(gate) });
+                    logAttempt(gate, userAnswer, true);
+                    setTimeout(() => {
+                        setProgress(prev => ({
+                            ...prev,
+                            awaitingHost: true,
+                            completedGates: [...prev.completedGates, gate]
+                        }));
+                        setFeedback(null);
+                    }, 1500);
+                } else {
+                    setFeedback({ type: 'error', message: getErrorMessage(gate) });
+                    logAttempt(gate, userAnswer, false);
+                }
+            };
+
+            const getSuccessMessage = (gate) => {
+                const messages = {
+                    1: 'Necessary.',
+                    2: 'Together.',
+                    3: 'Within.',
+                    4: 'Universal.',
+                    5: 'Structure precedes location.',
+                    6: 'Located.',
+                    7: 'Illuminated.',
+                    8: 'Acquired.',
+                    9: 'Complete.'
+                };
+                return messages[gate] || 'Correct.';
+            };
+
+            const getErrorMessage = (gate) => {
+                const messages = {
+                    1: 'Not sufficient.',
+                    2: 'Separated.',
+                    3: 'External.',
+                    4: 'Mutable.',
+                    5: 'Fragmented.',
+                    6: 'Displaced.',
+                    7: 'Obscured.',
+                    8: 'Innate.',
+                    9: 'Too hasty.'
+                };
+                return messages[gate] || 'Not consistent.';
+            };
+
+            const hostApprove = (pin) => {
+                if (pin === HOST_PIN) {
+                    setProgress(prev => ({
+                        ...prev,
+                        currentGate: prev.currentGate + 1,
+                        awaitingHost: false
+                    }));
+                    setShowAdmin(false);
+                    setFeedback({ type: 'success', message: 'Gate unlocked.' });
+                    setTimeout(() => setFeedback(null), 2000);
+                } else {
+                    setFeedback({ type: 'error', message: 'Invalid PIN.' });
+                }
+            };
+
+            const resetProgress = () => {
+                if (confirm('Reset all progress?')) {
+                    setProgress({
+                        currentGate: 1,
+                        completedGates: [],
+                        awaitingHost: false,
+                        gameComplete: false,
+                        attempts: {}
+                    });
+                    setShowAdmin(false);
+                }
+            };
+
+            if (progress.gameComplete) {
+                return <FinalReveal />;
+            }
+
+            if (progress.awaitingHost) {
+                return (
+                    <>
+                        <AdminPanel 
+                            onApprove={hostApprove}
+                            onReset={resetProgress}
+                            progress={progress}
+                            show={showAdmin}
+                            setShow={setShowAdmin}
+                        />
+                        <WaitingScreen />
+                    </>
+                );
+            }
+
+            return (
+                <>
+                    <AdminPanel 
+                        onApprove={hostApprove}
+                        onReset={resetProgress}
+                        progress={progress}
+                        show={showAdmin}
+                        setShow={setShowAdmin}
+                    />
+                    <div className="container">
+                        <h1 className="title">Initiation</h1>
+                        {feedback && (
+                            <div className={`feedback ${feedback.type}`}>
+                                {feedback.message}
+                            </div>
+                        )}
+                        <Gate 
+                            number={progress.currentGate}
+                            onSubmit={checkAnswer}
+                            setProgress={setProgress}
+                        />
+                    </div>
+                </>
+            );
+        }
+
+        function AdminPanel({ onApprove, onReset, progress, show, setShow }) {
+            const [pin, setPin] = useState('');
+            const [authenticated, setAuthenticated] = useState(false);
+            const [showAnswers, setShowAnswers] = useState(false);
+
+            const handlePinSubmit = () => {
+                if (pin === HOST_PIN) {
+                    setAuthenticated(true);
+                } else {
+                    alert('Invalid PIN');
+                    setPin('');
+                }
+            };
+
+            const handleApprove = () => {
+                onApprove(pin);
+                setPin('');
+                setAuthenticated(false);
+            };
+
+            const handleClose = () => {
+                setShow(false);
+                setAuthenticated(false);
+                setPin('');
+                setShowAnswers(false);
+            };
+
+            return (
+                <>
+                    <div className="admin-panel">
+                        <button className="admin-btn" onClick={() => setShow(true)}>⚙</button>
+                    </div>
+                    <div className={`modal ${show ? 'active' : ''}`} onClick={handleClose}>
+                        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                            <h3>Host Panel</h3>
+                            
+                            {!authenticated ? (
+                                // PIN ENTRY SCREEN - Must authenticate first!
+                                <div>
+                                    <p style={{marginBottom: '20px', color: '#666'}}>
+                                        Enter host PIN to access controls
+                                    </p>
+                                    <input
+                                        type="password"
+                                        placeholder="Enter PIN"
+                                        value={pin}
+                                        onChange={(e) => setPin(e.target.value)}
+                                        onKeyPress={(e) => e.key === 'Enter' && handlePinSubmit()}
+                                    />
+                                    <button onClick={handlePinSubmit}>
+                                        Authenticate
+                                    </button>
+                                    <button className="secondary-btn" onClick={handleClose}>
+                                        Cancel
+                                    </button>
+                                </div>
+                            ) : (
+                                // AUTHENTICATED - Show full admin controls
+                                <div>
+                                    <div>Current Gate: {progress.currentGate}</div>
+                                    <div>Completed: {progress.completedGates.join(', ') || 'None'}</div>
+                                    
+                                    {progress.awaitingHost && (
+                                        <div style={{marginTop: '20px'}}>
+                                            <p style={{color: '#27ae60', fontWeight: 'bold'}}>
+                                                ✓ Ready to approve Gate {progress.completedGates[progress.completedGates.length - 1]}
+                                            </p>
+                                            <button onClick={handleApprove}>
+                                                Approve & Unlock Next Gate
+                                            </button>
+                                        </div>
+                                    )}
+                                    
+                                    <button className="secondary-btn" onClick={onReset}>
+                                        Reset Progress
+                                    </button>
+                                    
+                                    <button className="secondary-btn" onClick={() => setShowAnswers(!showAnswers)}>
+                                        {showAnswers ? 'Hide' : 'Show'} Answer Key
+                                    </button>
+                                    
+                                    {showAnswers && (
+                                        <div style={{marginTop: '15px', fontSize: '0.9rem', backgroundColor: '#f8f9fa', padding: '15px', borderRadius: '6px'}}>
+                                            <strong>ANSWER KEY (HOST ONLY):</strong>
+                                            {Object.entries(GATES).map(([num, gate]) => (
+                                                <div key={num} style={{marginTop: '5px'}}>
+                                                    Gate {num}: <strong>{gate.answer || '(positional)'}</strong>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                    
+                                    <button className="secondary-btn" onClick={handleClose}>
+                                        Close & Lock
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </>
+            );
+        }
+
+        function WaitingScreen() {
+            return (
+                <div className="container waiting-screen">
+                    <h2>Return to Saggu.</h2>
+                    <div className="info" style={{marginTop: '40px'}}>
+                        The gate is solved. Await approval.
+                    </div>
+                </div>
+            );
+        }
+
+        function FinalReveal() {
+            return (
+                <div className="container final-reveal">
+                    <div className="sentence">
+                        Let us judge kebab<br/>
+                        where fire learned patience.
+                    </div>
+                </div>
+            );
+        }
+
+        function Gate({ number, onSubmit, setProgress }) {
+            const [answer, setAnswer] = useState('');
+            const [jigsawGrid, setJigsawGrid] = useState(Array(9).fill(''));
+
+            const handleSubmit = () => {
+                if (!answer.trim()) return;
+                onSubmit(number, GATES[number].answer, answer);
+                setAnswer('');
+            };
+
+            const handleJigsawSubmit = () => {
+                // Check if arrangement is correct
+                const hasAllPieces = ['FIRE', 'REPE', 'TITI', 'ON', 'CULT', 'URE', 'RESU', 'LT'].every(piece => 
+                    jigsawGrid.some(cell => cell.includes(piece.replace('|', '')))
+                );
+                
+                if (hasAllPieces) {
+                    onSubmit(5, 'JIGSAW', 'CORRECT');
+                    setProgress(prev => ({
+                        ...prev,
+                        awaitingHost: true,
+                        completedGates: [...prev.completedGates, 5]
+                    }));
+                } else {
+                    onSubmit(5, 'JIGSAW', 'WRONG');
+                }
+            };
+
+            const gates = {
+                1: <Gate1 answer={answer} setAnswer={setAnswer} onSubmit={handleSubmit} />,
+                2: <Gate2 answer={answer} setAnswer={setAnswer} onSubmit={handleSubmit} />,
+                3: <Gate3 answer={answer} setAnswer={setAnswer} onSubmit={handleSubmit} />,
+                4: <Gate4 answer={answer} setAnswer={setAnswer} onSubmit={handleSubmit} />,
+                5: <Gate5 grid={jigsawGrid} setGrid={setJigsawGrid} onSubmit={handleJigsawSubmit} />,
+                6: <Gate6 answer={answer} setAnswer={setAnswer} onSubmit={handleSubmit} />,
+                7: <Gate7 answer={answer} setAnswer={setAnswer} onSubmit={handleSubmit} />,
+                8: <Gate8 answer={answer} setAnswer={setAnswer} onSubmit={handleSubmit} />,
+                9: <Gate9 answer={answer} setAnswer={setAnswer} onSubmit={handleSubmit} />
+            };
+
+            return gates[number] || <div>Gate not found</div>;
+        }
+
+        function Gate1({ answer, setAnswer, onSubmit }) {
+            return (
+                <>
+                    <h2 className="gate-title">GATE I</h2>
+                    <div className="gate-content">
+                        <p>This gate opens when you speak the word that grants passage.</p>
+                        <p style={{marginTop: '15px'}}>The word permits.<br/>
+                        The word allows.<br/>
+                        The word is the answer to its own constraint.</p>
+                        <p style={{marginTop: '15px'}}>What single word grants permission to continue?</p>
+                    </div>
+                    <div className="input-container">
+                        <input
+                            type="text"
+                            placeholder="Enter the word"
+                            value={answer}
+                            onChange={(e) => setAnswer(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && onSubmit()}
+                        />
+                        <button onClick={onSubmit}>Submit</button>
+                    </div>
+                </>
+            );
+        }
+
+        function Gate2({ answer, setAnswer, onSubmit }) {
+            return (
+                <>
+                    <h2 className="gate-title">GATE II</h2>
+                    <div className="gate-content">
+                        <p>Two minds.<br/>
+                        One answer.<br/>
+                        No communication required.</p>
+                        <p style={{marginTop: '15px'}}>You and the host exist in relation.<br/>
+                        What word describes this relation?</p>
+                        <p style={{marginTop: '15px'}}>Not "I".<br/>
+                        Not "you".<br/>
+                        What remains?</p>
+                    </div>
+                    <div className="input-container">
+                        <input
+                            type="text"
+                            placeholder="Enter the word"
+                            value={answer}
+                            onChange={(e) => setAnswer(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && onSubmit()}
+                        />
+                        <button onClick={onSubmit}>Submit</button>
+                    </div>
+                </>
+            );
+        }
+
+        function Gate3({ answer, setAnswer, onSubmit }) {
+            return (
+                <>
+                    <h2 className="gate-title">GATE III</h2>
+                    <div className="gate-content">
+                        <p>Consider what lies within your control:</p>
+                        <ul>
+                            <li>The weather tomorrow</li>
+                            <li>Your reputation among strangers</li>
+                            <li>The outcome of chance</li>
+                            <li>Your interpretation of events</li>
+                            <li>The actions of others</li>
+                            <li>Your physical appearance</li>
+                            <li>Your chosen response</li>
+                            <li>The passage of time</li>
+                            <li>Your evaluation of worth</li>
+                        </ul>
+                        <p style={{marginTop: '15px'}}>Remove all that is external.<br/>
+                        Remove all that fortune dictates.<br/>
+                        Remove all that others determine.</p>
+                        <p style={{marginTop: '15px'}}>What single action remains absolutely within your power?</p>
+                    </div>
+                    <div className="input-container">
+                        <input
+                            type="text"
+                            placeholder="Enter the word"
+                            value={answer}
+                            onChange={(e) => setAnswer(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && onSubmit()}
+                        />
+                        <button onClick={onSubmit}>Submit</button>
+                    </div>
+                </>
+            );
+        }
+
+        function Gate4({ answer, setAnswer, onSubmit }) {
+            return (
+                <>
+                    <h2 className="gate-title">GATE IV</h2>
+                    <div className="gate-content">
+                        <p>Languages transform meaning across borders.</p>
+                        <p style={{marginTop: '15px'}}>
+                        "Water" becomes "Wasser" becomes "eau" becomes "agua".<br/>
+                        "Friend" becomes "Freund" becomes "ami" becomes "amigo".<br/>
+                        "Love" becomes "Liebe" becomes "amour" becomes "amor".</p>
+                        <p style={{marginTop: '15px'}}>Yet some words resist transformation.<br/>
+                        They pass unchanged through linguistic boundaries.<br/>
+                        They preserve their form across continents.</p>
+                        <p style={{marginTop: '15px'}}>Consider a word that names:</p>
+                        <ul>
+                            <li>Meat on a skewer</li>
+                            <li>Cooked over sustained heat</li>
+                            <li>Found from Berlin to Bangkok</li>
+                            <li>Spelled identically in a dozen tongues</li>
+                        </ul>
+                        <p style={{marginTop: '15px'}}>What is this invariant word?</p>
+                    </div>
+                    <div className="input-container">
+                        <input
+                            type="text"
+                            placeholder="Enter the word"
+                            value={answer}
+                            onChange={(e) => setAnswer(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && onSubmit()}
+                        />
+                        <button onClick={onSubmit}>Submit</button>
+                    </div>
+                </>
+            );
+        }
+
+        function Gate5({ grid, setGrid, onSubmit }) {
+            const tiles = ['FI|RE', 'RE|PE', 'TI|TI', 'ON', 'CUL|T', 'URE', '→ RE|SU', 'LT', '↓'];
+            
+            const selectTile = (position, tile) => {
+                const newGrid = [...grid];
+                newGrid[position] = tile;
+                setGrid(newGrid);
+            };
+
+            return (
+                <>
+                    <h2 className="gate-title">GATE V</h2>
+                    <div className="gate-content">
+                        <p>Nine fragments.<br/>
+                        One structure.<br/>
+                        No imagery.</p>
+                        <p style={{marginTop: '15px'}}>Arrange the tiles to reveal coherent meaning.<br/>
+                        The structure precedes the word.</p>
+                        
+                        <div className="grid-container" style={{marginTop: '20px'}}>
+                            {grid.map((cell, i) => (
+                                <div key={i} className="grid-cell">
+                                    {cell || (i + 1)}
+                                </div>
+                            ))}
+                        </div>
+                        
+                        <p style={{marginTop: '20px', fontSize: '0.9rem'}}>Available tiles:</p>
+                        <div style={{display: 'flex', flexWrap: 'wrap', gap: '5px', marginTop: '10px'}}>
+                            {tiles.map((tile, i) => (
+                                <div key={i} className="tile-option" onClick={() => {
+                                    const emptyPos = grid.findIndex(c => !c);
+                                    if (emptyPos !== -1) selectTile(emptyPos, tile);
+                                }}>
+                                    {tile}
+                                </div>
+                            ))}
+                        </div>
+                        
+                        <p style={{marginTop: '15px', fontSize: '0.85rem', color: '#666'}}>
+                        Tap a tile to add it to the first empty position. Tap "Clear" to reset.
+                        </p>
+                    </div>
+                    <div className="input-container">
+                        <button onClick={onSubmit}>Submit Arrangement</button>
+                        <button className="secondary-btn" onClick={() => setGrid(Array(9).fill(''))}>
+                            Clear Grid
+                        </button>
+                    </div>
+                </>
+            );
+        }
+
+        function Gate6({ answer, setAnswer, onSubmit }) {
+            return (
+                <>
+                    <h2 className="gate-title">GATE VI</h2>
+                    <div className="gate-content">
+                        <p>Location is not coordinates.<br/>
+                        Place is not a point on a map.</p>
+                        <p style={{marginTop: '15px'}}>Fire transforms through repetition.<br/>
+                        Repetition creates culture.<br/>
+                        Culture resides in place.</p>
+                        <p style={{marginTop: '15px'}}>The question precedes the answer.<br/>
+                        The inquiry precedes the destination.</p>
+                        <p style={{marginTop: '15px'}}>What single word asks for location without demanding latitude?<br/>
+                        What word seeks place through relation rather than position?</p>
+                    </div>
+                    <div className="input-container">
+                        <input
+                            type="text"
+                            placeholder="Enter the word"
+                            value={answer}
+                            onChange={(e) => setAnswer(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && onSubmit()}
+                        />
+                        <button onClick={onSubmit}>Submit</button>
+                    </div>
+                </>
+            );
+        }
+
+        function Gate7({ answer, setAnswer, onSubmit }) {
+            return (
+                <>
+                    <h2 className="gate-title">GATE VII</h2>
+                    <div className="gate-content">
+                        <p>Look beyond the surface.<br/>
+                        Some truths hide in plain sight.</p>
+                        <div className="pre-text" style={{marginTop: '15px'}}>
+{`╔═══════════════════════════╗
+║ F ░ I ░ R ░ E ░ ░ ░ ░ ░ ░ ║
+║ ░ L ░ A ░ M ░ E ░ ░ ░ ░ ░ ║
+║ ░ ░ H ░ E ░ A ░ T ░ ░ ░ ░ ║
+║ ░ ░ ░ B ░ U ░ R ░ N ░ ░ ░ ║
+║ ░ ░ ░ ░ I ░ G ░ N ░ I ░ T ║
+║ ░ ░ ░ ░ ░ L ░ O ░ W ░ ░ ░ ║
+╚═══════════════════════════╝`}
+                        </div>
+                        <p style={{marginTop: '15px'}}>Read the diagonal.<br/>
+                        Not the noise.<br/>
+                        What element appears?</p>
+                    </div>
+                    <div className="input-container">
+                        <input
+                            type="text"
+                            placeholder="Enter the word"
+                            value={answer}
+                            onChange={(e) => setAnswer(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && onSubmit()}
+                        />
+                        <button onClick={onSubmit}>Submit</button>
+                    </div>
+                </>
+            );
+        }
+
+        function Gate8({ answer, setAnswer, onSubmit }) {
+            return (
+                <>
+                    <h2 className="gate-title">GATE VIII</h2>
+                    <div className="gate-content">
+                        <p>Knowledge comes in two forms:</p>
+                        <p style={{marginTop: '15px'}}>
+                        <strong>KNOWN</strong> = possessed from the start, innate, given<br/>
+                        <strong>?</strong> = acquired through experience, earned through repetition</p>
+                        <p style={{marginTop: '15px'}}>
+                        A child knows hunger.<br/>
+                        A child _______ to walk.</p>
+                        <p style={{marginTop: '10px'}}>
+                        A bird knows flight.<br/>
+                        A bird _______ its territory.</p>
+                        <p style={{marginTop: '10px'}}>
+                        Fire knows heat.<br/>
+                        Patience is _______.</p>
+                        <p style={{marginTop: '15px'}}>What verb describes knowledge gained only through time?<br/>
+                        What word means "acquired through repeated experience"?</p>
+                        <p style={{marginTop: '15px'}}><em>Past tense. One word.</em></p>
+                    </div>
+                    <div className="input-container">
+                        <input
+                            type="text"
+                            placeholder="Enter the word"
+                            value={answer}
+                            onChange={(e) => setAnswer(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && onSubmit()}
+                        />
+                        <button onClick={onSubmit}>Submit</button>
+                    </div>
+                </>
+            );
+        }
+
+        function Gate9({ answer, setAnswer, onSubmit }) {
+            return (
+                <>
+                    <h2 className="gate-title">GATE IX</h2>
+                    <div className="gate-content">
+                        <p><strong>CONSTRAINTS:</strong></p>
+                        <ol style={{marginTop: '15px', paddingLeft: '20px'}}>
+                            <li>Eight letters.</li>
+                            <li>Contains exactly three vowels.</li>
+                            <li>First letter: P</li>
+                            <li>Last letter: E</li>
+                            <li>The word describes a quality required to solve this very puzzle.</li>
+                            <li>It cannot be achieved through force.</li>
+                            <li>It grows only through sustained practice.</li>
+                            <li>Fire teaches it to meat.</li>
+                        </ol>
+                        <p style={{marginTop: '15px'}}>What word satisfies all constraints?</p>
+                    </div>
+                    <div className="input-container">
+                        <input
+                            type="text"
+                            placeholder="Enter the word"
+                            value={answer}
+                            onChange={(e) => setAnswer(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && onSubmit()}
+                        />
+                        <button onClick={onSubmit}>Submit</button>
+                    </div>
+                </>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+
+        // Service Worker for offline capability
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('data:application/javascript;base64,c2VsZi5hZGRFdmVudExpc3RlbmVyKCdpbnN0YWxsJywgZnVuY3Rpb24oZXZlbnQpIHsgZXZlbnQud2FpdFVudGlsKHNlbGYuc2tpcFdhaXRpbmcoKSk7IH0pOw==');
+        }
+    </script>
+</body>
+</html>
