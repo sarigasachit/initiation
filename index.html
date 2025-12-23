@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -20,7 +20,6 @@
       max-width: 100vw;
     }
 
-    /* --- FIX: keep everything centered on phones --- */
     #root{
       width: 100%;
       min-height: 100vh;
@@ -29,7 +28,6 @@
       align-items: stretch;
     }
 
-    /* --- FIX: center the jigsaw even when it must scroll horizontally --- */
     .jigsaw-scroll{
       display: flex;
       justify-content: center;
@@ -273,6 +271,7 @@
       .feedback { font-size: 1rem; padding: 14px; }
       .admin-btn { width: 40px; height: 40px; font-size: 1.05rem; top: 10px; right: 10px; }
       .modal-content { width: 96%; padding: 18px; }
+      .jigsaw-grid { min-width: 520px; }
     }
   </style>
 </head>
@@ -409,7 +408,7 @@
       const [endStage, setEndStage] = useState('gates'); // gates | phrase | destination | jigsaw | reveal
       const [destAttempts, setDestAttempts] = useState(0);
 
-      // NEW: remember if reveal was earned via the jigsaw
+      // If player reaches puzzle screen (or solves it / guesses there), we treat it as "earned"
       const [revealFromJigsaw, setRevealFromJigsaw] = useState(false);
 
       const [feedback, setFeedback] = useState(null);
@@ -456,7 +455,7 @@
         setTimeout(() => {
           if (gate === 9) {
             setProgress(prev => ({ ...prev, completedGates: [...prev.completedGates, gate] }));
-            setEndStage('phrase'); // do not show phrase automatically
+            setEndStage('phrase');
           } else {
             setProgress(prev => ({
               ...prev,
@@ -533,7 +532,7 @@
           setFeedback({ type: 'success', message: 'Correct. The veil lifts.' });
           setTimeout(() => {
             setFeedback(null);
-            setRevealFromJigsaw(false); // guessed directly -> no flight ticket
+            setRevealFromJigsaw(false); // direct guess (no puzzle) -> no flight ticket
             setEndStage('reveal');
           }, 900);
         } else {
@@ -545,11 +544,28 @@
             setTimeout(() => {
               setFeedback(null);
               setAnswer('');
+              setRevealFromJigsaw(true); // entering puzzle screen means "earned path"
               setEndStage('jigsaw');
             }, 900);
           } else {
             setFeedback({ type: 'error', message: `No. (${next}/${DESTINATION_MAX_ATTEMPTS}) Try again.` });
           }
+        }
+      };
+
+      // NEW: submit destination while on the jigsaw screen (box is always visible there)
+      const submitDestinationFromJigsaw = () => {
+        const norm = answer.trim().toUpperCase();
+        const ok = DESTINATION_ACCEPT.includes(norm);
+        if (ok) {
+          setFeedback({ type: 'success', message: 'Correct. The veil lifts.' });
+          setTimeout(() => {
+            setFeedback(null);
+            setRevealFromJigsaw(true); // puzzle path -> show flight ticket after Turkey
+            setEndStage('reveal');
+          }, 700);
+        } else {
+          setFeedback({ type: 'error', message: 'No. Look again.' });
         }
       };
 
@@ -602,7 +618,7 @@
                   Now speak the place.
                 </div>
                 <p style={{ textAlign:'center', color:'#d0d0d0', fontStyle:'italic' }}>
-                  One place
+                  One place.
                 </p>
               </div>
 
@@ -616,16 +632,22 @@
               <button onClick={submitDestination}>Declare</button>
 
               <button
-                onClick={() => { setEndStage('jigsaw'); setFeedback(null); setAnswer(''); }}
+                onClick={() => {
+                  setEndStage('jigsaw');
+                  setFeedback(null);
+                  setAnswer('');
+                  setRevealFromJigsaw(true); // entering puzzle path
+                }}
                 style={{ opacity: 0.85 }}
               >
-               Show me the clue puzzle.
+                Show me the clue puzzle.
               </button>
             </div>
           </>
         );
       }
 
+      // ✅ JIGSAW STAGE: Turkey puzzle + destination input box together
       if (endStage === 'jigsaw') {
         return (
           <div className="container" style={{ paddingTop:'40px' }}>
@@ -647,13 +669,38 @@
               margin:'20px 0 10px',
               lineHeight:2
             }}>
-              Rebuild the image to earn the answer.
+              Rebuild the image — or name the place when the picture speaks.
             </div>
 
+            {feedback && <div className={`feedback ${feedback.type}`}>{feedback.message}</div>}
+
             <JigsawPuzzle32 onComplete={() => {
-              setRevealFromJigsaw(true);     // IMPORTANT: puzzle path
+              // If solved, still reveal
+              setRevealFromJigsaw(true);
               setEndStage('reveal');
             }} />
+
+            <div style={{ marginTop:'22px' }}>
+              <div className="verse" style={{ textAlign:'center' }}>
+                If you can name it now, do it.
+              </div>
+
+              <input
+                type="text"
+                placeholder="Destination (one word)"
+                value={answer}
+                onChange={(e) => setAnswer(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && submitDestinationFromJigsaw()}
+              />
+              <button onClick={submitDestinationFromJigsaw}>Declare</button>
+
+              <button
+                onClick={() => { setAnswer(''); setFeedback(null); }}
+                style={{ opacity: 0.85 }}
+              >
+                Clear
+              </button>
+            </div>
           </div>
         );
       }
@@ -774,13 +821,12 @@
       );
     }
 
-    // ===== FINAL REVEAL SCREEN (Turkey + optional flight.jpg after jigsaw) =====
     function FinalRevealScreen({ showFlightTicket }) {
       const [showTicket, setShowTicket] = useState(false);
 
       useEffect(() => {
         if (showFlightTicket) {
-          const t = setTimeout(() => setShowTicket(true), 900); // reveal after turkey
+          const t = setTimeout(() => setShowTicket(true), 900);
           return () => clearTimeout(t);
         }
       }, [showFlightTicket]);
@@ -821,7 +867,6 @@
             Where we shall judge kebab together.
           </div>
 
-          {/* ONLY after jigsaw completion */}
           {showFlightTicket && showTicket && (
             <div className="ticket-wrap">
               <div className="ticket-title">CONFIRMED</div>
@@ -844,7 +889,6 @@
       );
     }
 
-    // ===== 32-PIECE IMAGE JIGSAW (8x4) =====
     function JigsawPuzzle32({ onComplete }) {
       const GRID_COLS = 4;
       const GRID_ROWS = 8;
@@ -935,7 +979,6 @@
       );
     }
 
-    // ===== GATE RENDERING =====
     function Gate({ number, answer, setAnswer, gate5Grid, setGate5Grid, onSubmit }) {
       const SVGImage = ({ data, caption }) => (
         <div className="image-container">
